@@ -1,4 +1,4 @@
-// Vercel Serverless Function: API 키 보안을 위해 서버 측에서 API를 호출합니다.
+// Vercel Serverless Function: API 키 보안을 위해 서버 측에서 API를 호출합니다. (최종 배포 확인: 2026-05-08)
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
