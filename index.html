@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오늘 하루 어땠나요? | AI 감정일기</title>
+    <meta name="description" content="고등학생을 위한 감성적인 AI 감정일기 서비스">
+    
+    <!-- 아이콘 및 폰트 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <header>
+            <div class="logo">🌙</div>
+            <h1 id="main-title">오늘 하루 어땠나요?</h1>
+            <p class="subtitle">네 마음속 이야기를 여기에 편하게 털어놔봐.</p>
+        </header>
+
+        <main>
+            <!-- 입력창 영역 -->
+            <section class="input-container">
+                <textarea id="diary-input" placeholder="여기에 오늘의 감정을 적어보세요... (음성 입력도 가능해요!)"></textarea>
+                <div id="recording-status" class="status-indicator hidden">
+                    <span class="dot"></span> 듣고 있어요...
+                </div>
+            </section>
+
+            <!-- 액션 버튼 영역 -->
+            <section class="button-group">
+                <button id="voice-input-btn" class="action-btn" title="목소리로 입력하기">
+                    <i class="fas fa-microphone"></i>
+                    <span>음성 입력</span>
+                </button>
+                <button id="ai-counselor-btn" class="action-btn primary" title="AI 상담사에게 물어보기">
+                    <i class="fas fa-sparkles"></i>
+                    <span>AI 상담 시작</span>
+                </button>
+            </section>
+
+            <!-- AI 답변 영역 -->
+            <section id="ai-response-area" class="response-container hidden">
+                <div class="ai-profile">
+                    <div class="ai-avatar-wrapper">
+                        <img src="https://api.dicebear.com/6.x/bottts/svg?seed=Lucky" alt="AI Avatar" class="ai-avatar">
+                    </div>
+                    <div class="ai-info">
+                        <span class="ai-name">따뜻한 AI 상담사</span>
+                        <span class="ai-status">온라인</span>
+                    </div>
+                </div>
+                <div id="ai-response-text" class="response-bubble">
+                    <!-- AI 답변이 타이핑 효과와 함께 나타납니다 -->
+                </div>
+            </section>
+
+            <!-- 저장된 기록 확인 버튼 (추가 예정) -->
+            <div class="history-link">
+                <i class="fas fa-history"></i> 이전 기록 보기
+            </div>
+        </main>
+
+        <footer>
+            <p>Made with ❤️ for Students</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
