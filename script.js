@@ -1,9 +1,8 @@
 /**
- * 고등학생 감정일기 앱 - Gemini AI 연동 버전
+ * 고등학생 감정일기 앱 - 보안 강화 버전 (Vercel Serverless Function 연동)
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. 요소 선택
     const diaryInput = document.getElementById('diary-input');
     const voiceBtn = document.getElementById('voice-input-btn');
     const aiBtn = document.getElementById('ai-counselor-btn');
@@ -11,18 +10,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const responseText = document.getElementById('ai-response-text');
     const recordingStatus = document.getElementById('recording-status');
 
-    // 2. API 설정 (사용자 제공 키)
-    const API_KEY = "AIzaSyA5J22iN6tlA_31qvQPsv0bqh3XBiXvj-Q";
-    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+    // [변경됨] 이제 클라이언트 사이드에서는 API 키를 사용하지 않습니다.
+    // 모든 요청은 /api/counselor 라는 서버 측 경로로 전달됩니다.
 
-    // 3. 초기 데이터 불러오기
     const savedDiary = localStorage.getItem('today_diary');
     if (savedDiary) diaryInput.value = savedDiary;
 
-    // 4. 음성 인식 설정
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     let recognition;
-
     if (SpeechRecognition) {
         recognition = new SpeechRecognition();
         recognition.lang = 'ko-KR';
@@ -41,7 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // 5. 이벤트 리스너
     voiceBtn.addEventListener('click', () => {
         if (!recognition) return alert('음성 인식을 지원하지 않는 브라우저입니다.');
         recognition.start();
@@ -53,23 +47,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const content = diaryInput.value.trim();
         if (!content) return alert('오늘의 일기를 적어주세요! 😊');
 
-        // 로딩 표시
         responseArea.classList.remove('hidden');
-        responseText.innerText = "고등학생 전문 상담사님이 일기를 읽고 계세요... ✨";
+        responseText.innerText = "상담사 선생님이 일기를 분석 중입니다... ✨";
         responseArea.scrollIntoView({ behavior: 'smooth' });
 
         try {
-            // Gemini API 호출
-            const response = await fetch(API_URL, {
+            // [변경됨] 직접 Gemini로 가지 않고, 우리가 만든 Vercel 서버 API로 요청을 보냅니다.
+            const response = await fetch('/api/counselor', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [{
-                        parts: [{
-                            text: `당신은 고등학생 전문 상담사입니다. 다음 일기를 읽고 [감정 단어 한 개]를 먼저 말한 뒤, 공감과 따뜻한 위로가 담긴 메시지를 2~3문장으로 작성해주세요.\n\n학생의 일기: "${content}"`
-                        }]
-                    }]
-                })
+                body: JSON.stringify({ content: content })
             });
 
             const data = await response.json();
@@ -78,16 +65,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 const aiMessage = data.candidates[0].content.parts[0].text;
                 displayTypingEffect(aiMessage);
             } else {
-                throw new Error("응답 데이터가 없습니다.");
+                throw new Error("상담사님의 응답을 가져오지 못했습니다.");
             }
 
         } catch (error) {
-            console.error("AI 상담 오류:", error);
-            responseText.innerText = "잠시 상담 선생님과 연결이 어려워요. API 키를 확인하거나 잠시 후 다시 시도해 주세요! 😢";
+            console.error("상담 오류:", error);
+            responseText.innerText = "서버 설정(환경 변수)을 확인해 주시거나, 잠시 후 다시 시도해 주세요! 😢";
         }
     });
 
-    // 6. 지원 함수
     function saveToLocal() {
         localStorage.setItem('today_diary', diaryInput.value);
     }
